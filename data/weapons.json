@@ -1,0 +1,50 @@
+[
+  {
+    "id": "w_bronze_sword",
+    "name": "브론즈 소드",
+    "baseAtk": 3,
+    "atkScale": 0.55
+  },
+  {
+    "id": "w_iron_sword",
+    "name": "아이언 소드",
+    "baseAtk": 4,
+    "atkScale": 0.62
+  },
+  {
+    "id": "w_hunter_dagger",
+    "name": "헌터 대거",
+    "baseAtk": 3,
+    "atkScale": 0.52
+  },
+  {
+    "id": "w_war_axe",
+    "name": "워 액스",
+    "baseAtk": 5,
+    "atkScale": 0.7
+  },
+  {
+    "id": "w_spear",
+    "name": "스피어",
+    "baseAtk": 4,
+    "atkScale": 0.6
+  },
+  {
+    "id": "w_mage_staff",
+    "name": "메이지 스태프",
+    "baseAtk": 4,
+    "atkScale": 0.58
+  },
+  {
+    "id": "w_shadow_blade",
+    "name": "섀도우 블레이드",
+    "baseAtk": 6,
+    "atkScale": 0.78
+  },
+  {
+    "id": "w_dragontooth",
+    "name": "드래곤투스",
+    "baseAtk": 7,
+    "atkScale": 0.85
+  }
+]

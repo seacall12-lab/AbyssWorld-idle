@@ -1,0 +1,38 @@
+[
+  {
+    "id": "a_leather",
+    "name": "가죽 갑옷",
+    "baseAtk": 1,
+    "atkScale": 0.25
+  },
+  {
+    "id": "a_chain",
+    "name": "체인 메일",
+    "baseAtk": 2,
+    "atkScale": 0.32
+  },
+  {
+    "id": "a_plate",
+    "name": "플레이트 아머",
+    "baseAtk": 3,
+    "atkScale": 0.4
+  },
+  {
+    "id": "a_ranger",
+    "name": "레인저 코트",
+    "baseAtk": 2,
+    "atkScale": 0.34
+  },
+  {
+    "id": "a_mystic",
+    "name": "미스틱 로브",
+    "baseAtk": 2,
+    "atkScale": 0.3
+  },
+  {
+    "id": "a_shadow",
+    "name": "섀도우 수트",
+    "baseAtk": 4,
+    "atkScale": 0.46
+  }
+]

@@ -1,0 +1,54 @@
+[
+  {
+    "id": "ps_bite",
+    "name": "물어뜯기",
+    "kind": "burst_damage",
+    "cooldown": 12,
+    "value": 2.6,
+    "desc": "주기적으로 추가 피해를 줍니다 (ATK×2.6)."
+  },
+  {
+    "id": "ps_howl",
+    "name": "울부짖음",
+    "kind": "buff_aspd",
+    "cooldown": 25,
+    "value": 0.35,
+    "duration": 8,
+    "desc": "일시적으로 공격속도 +35%."
+  },
+  {
+    "id": "ps_shiny",
+    "name": "반짝 행운",
+    "kind": "buff_gold",
+    "cooldown": 30,
+    "value": 0.4,
+    "duration": 10,
+    "desc": "일시적으로 골드 획득 +40%."
+  },
+  {
+    "id": "ps_sniff",
+    "name": "냄새 추적",
+    "kind": "buff_drop",
+    "cooldown": 35,
+    "value": 0.06,
+    "duration": 10,
+    "desc": "일시적으로 드랍 확률 +6%p."
+  },
+  {
+    "id": "ps_fireball",
+    "name": "미니 파이어볼",
+    "kind": "burst_damage",
+    "cooldown": 18,
+    "value": 3.4,
+    "desc": "주기적으로 추가 피해를 줍니다 (ATK×3.4)."
+  },
+  {
+    "id": "ps_guard",
+    "name": "수호의 기운",
+    "kind": "buff_atk",
+    "cooldown": 28,
+    "value": 0.25,
+    "duration": 10,
+    "desc": "일시적으로 공격력 +25%."
+  }
+]

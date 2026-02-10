@@ -1,0 +1,56 @@
+[
+  {
+    "id": "p_wolf",
+    "name": "늑대 새끼",
+    "rarity": "C",
+    "passive": "dps_pct",
+    "passiveValue": 0.06,
+    "skillId": "ps_bite",
+    "desc": "기본 공격을 돕는 펫."
+  },
+  {
+    "id": "p_fairy",
+    "name": "작은 요정",
+    "rarity": "U",
+    "passive": "dps_pct",
+    "passiveValue": 0.07,
+    "skillId": "ps_shiny",
+    "desc": "골드 수급을 보조."
+  },
+  {
+    "id": "p_raven",
+    "name": "까마귀",
+    "rarity": "U",
+    "passive": "dps_pct",
+    "passiveValue": 0.065,
+    "skillId": "ps_sniff",
+    "desc": "드랍을 보조."
+  },
+  {
+    "id": "p_fox",
+    "name": "여우",
+    "rarity": "R",
+    "passive": "dps_pct",
+    "passiveValue": 0.075,
+    "skillId": "ps_howl",
+    "desc": "공격속도 버프."
+  },
+  {
+    "id": "p_imp",
+    "name": "임프",
+    "rarity": "R",
+    "passive": "dps_pct",
+    "passiveValue": 0.08,
+    "skillId": "ps_fireball",
+    "desc": "추가 딜링 펫."
+  },
+  {
+    "id": "p_guardian",
+    "name": "수호 정령",
+    "rarity": "E",
+    "passive": "dps_pct",
+    "passiveValue": 0.09,
+    "skillId": "ps_guard",
+    "desc": "공격력 버프."
+  }
+]
