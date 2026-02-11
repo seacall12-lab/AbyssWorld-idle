@@ -863,7 +863,7 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
     logPush(S, `환생! 정수 +${gain}${bonus?` (마일스톤 +${bonus})`:""}`, {cat:"sys"});
     saveState(S);
 
-    U.modal = { type:"toast", msg:`환생 완료 · 정수 ${S.prestige.essence}` };
+    toast(`환생 완료 · 정수 ${S.prestige.essence}`, 1.2);
   };
   const render = (d) => {
     ui.resetHot();
@@ -958,3 +958,19 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
 
         button("취소", mx+16, my+mh-52, 94, 36, { fill:"rgba(148,163,184,.12)", stroke:"rgba(148,163,184,.22)", onTap: ()=>{ U.modal=null; } });
         button("환생", mx+mw-110, my+mh-52, 94, 36, { fill:"rgba(245,158,11,.22)", stroke:"rgba(245,158,11,.35)", onTap: ()=>{ const g=calcEssenceGain(); U.modal=null; resetForPrestige(g); } });
+
+      }
+    }
+
+    ctx.restore();
+
+    drawBottomTabs();
+    drawToast();
+    fx.renderFlash(ui.ctx, ui.w, ui.h);
+  };
+
+  requestAnimationFrame(loop);
+})().catch((e) => {
+  console.error(e);
+  alert("초기 로딩 실패: 콘솔(F12) 에러를 확인하세요.");
+});
