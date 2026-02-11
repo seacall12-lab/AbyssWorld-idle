@@ -1,4 +1,4 @@
-import { nowMs, clamp } from "./utils.js";
+import { nowMs, clamp, rand01 } from "./utils.js";
 import { dropChanceBase, computeEnemyForStage } from "./balance.js";
 import { statWithEnh, makeItem, pruneInventory } from "./items.js";
 import { computePetDpsBonus } from "./pets.js";
@@ -71,14 +71,38 @@ export const computeDerived = (S, tables) => {
   let goldBonus = clamp(S.player.goldBonus + (upGold*0.03) + rGold, 0, 5);
   goldBonus *= (S.buffs.goldMul || 1);
 
-  const dropChance = clamp(dropChanceBase(S.stage) + (S.buffs.dropAdd||0), 0.05, 0.60);
+  let dropChance = clamp(dropChanceBase(S.stage) + (S.buffs.dropAdd||0), 0.05, 0.60);
 
   const dpsPlayer = atk * aspd * (1 + crit*(critMul-1));
   const petBonus = computePetDpsBonus(S);
   const dpsPets = dpsPlayer * petBonus;
 
-  return { atk, aspd, crit, critMul, goldBonus, dropChance, dpsPlayer, dpsPets, dpsTotal: dpsPlayer + dpsPets };
+  // prestige (essence) bonuses (stable, small)
+  const ess = Math.max(0, (S.prestige && S.prestige.essence) ? S.prestige.essence : 0);
+  const atkMulEss = 1 + 0.02 * ess;
+  const goldAddEss = 0.015 * ess;
+  const dropAddEss = 0.002 * ess; // +0.2%p each essence
+
+  atk *= atkMulEss;
+  goldBonus += goldAddEss;
+  dropChance = Math.min(0.60, dropChance + dropAddEss);
+  dpsPlayer = atk * aspd * (1 + crit*(critMul-1));
+  // prestige (essence) bonuses (stable, small)
+  const ess = Math.max(0, (S.prestige && S.prestige.essence) ? S.prestige.essence : 0);
+  const atkMulEss = 1 + 0.02 * ess;
+  const goldAddEss = 0.015 * ess;
+  const dropAddEss = 0.002 * ess; // +0.2%p each essence
+
+  atk *= atkMulEss;
+  goldBonus += goldAddEss;
+  dropChance = Math.min(0.60, dropChance + dropAddEss);
+
+  // recompute dps with modified atk/drop
+  const dpsPlayer2 = atk * aspd * (1 + crit*(critMul-1));
+
+  return { atk, aspd, crit, critMul, goldBonus, dropChance, dpsPlayer: dpsPlayer2, dpsPets, dpsTotal: dpsPlayer2 + dpsPets };
 };
+
 
 export const dealDamage = (S, amount) => {
   const dmg = Math.max(0, amount);
@@ -94,7 +118,7 @@ export const bossChestReward = (S, tables, d, logPush) => {
   const bonusGold = Math.floor(S.enemy.gold * (1 + d.goldBonus) * 1.5);
   S.gold += bonusGold;
 
-  const it = makeItem(tables, S.stage, null, null, true);
+  const it = makeItem(tables, S.stage, S, null, null, true);
   S.inventory.push(it);
   S.drops += 1;
   pruneInventory(S, 70);
@@ -110,8 +134,8 @@ export const onKill = (S, tables, d, logPush, saveState) => {
 
   addExp(S, S.enemy.exp, logPush);
 
-  if (Math.random() < d.dropChance) {
-    const it = makeItem(tables, S.stage);
+  if (rand01(S) < d.dropChance) {
+    const it = makeItem(tables, S.stage, S);
     S.inventory.push(it);
     S.drops += 1;
     pruneInventory(S, 70);

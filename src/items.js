@@ -1,4 +1,4 @@
-import { clamp, pickWeighted, uid } from "./utils.js";
+import { clamp, pickWeighted, pickWeightedByRand, rand01, uid } from "./utils.js";
 import { RARITY, boostedRarityWeights, rarityIndex, nextRarityKey, ENH_MAX, enhanceChance } from "./balance.js";
 
 export const ITEM_TYPES = [
@@ -43,22 +43,24 @@ export const tryEnhance = (S, itemId, logPush, saveState) => {
 
 const rarityByKey = (k) => RARITY[Math.max(0, RARITY.findIndex(x=>x.key===k))];
 
-const pickRarity = (rarityBoost=false) => {
-  if (!rarityBoost) return pickWeighted(RARITY, "weight");
-  const picked = pickWeighted(boostedRarityWeights, "weight");
+const pickRarity = (S, rarityBoost=false) => {
+  if (!rarityBoost){
+    return S ? pickWeightedByRand(RARITY, rand01(S), "weight") : pickWeighted(RARITY, "weight");
+  }
+  const picked = S ? pickWeightedByRand(boostedRarityWeights, rand01(S), "weight") : pickWeighted(boostedRarityWeights, "weight");
   return rarityByKey(picked.key);
 };
 
-export const makeItem = (tables, stage, forcedType=null, forcedRar=null, rarityBoost=false) => {
-  const rarity = forcedRar ? rarityByKey(forcedRar) : pickRarity(rarityBoost);
-  const t = forcedType ? ITEM_TYPES.find(x=>x.type===forcedType) : ITEM_TYPES[Math.floor(Math.random()*ITEM_TYPES.length)];
+export const makeItem = (tables, stage, S=null, forcedType=null, forcedRar=null, rarityBoost=false) => {
+  const rarity = forcedRar ? rarityByKey(forcedRar) : pickRarity(S, rarityBoost);
+  const t = forcedType ? ITEM_TYPES.find(x=>x.type===forcedType) : ITEM_TYPES[Math.floor((S?rand01(S):Math.random())*ITEM_TYPES.length)];
 
   let baseDef = null;
-  if (t.type === "weapon") baseDef = tables.weapons[Math.floor(Math.random()*tables.weapons.length)];
-  if (t.type === "armor")  baseDef = tables.armors[Math.floor(Math.random()*tables.armors.length)];
-  if (t.type === "ring")   baseDef = tables.rings[Math.floor(Math.random()*tables.rings.length)];
+  if (t.type === "weapon") baseDef = tables.weapons[Math.floor((S?rand01(S):Math.random())*tables.weapons.length)];
+  if (t.type === "armor")  baseDef = tables.armors[Math.floor((S?rand01(S):Math.random())*tables.armors.length)];
+  if (t.type === "ring")   baseDef = tables.rings[Math.floor((S?rand01(S):Math.random())*tables.rings.length)];
 
-  const roll = 0.85 + Math.random()*0.45;
+  const roll = 0.85 + (S?rand01(S):Math.random())*0.45;
   const id = uid("it");
 
   let atk = 0, gold = 0;
@@ -181,7 +183,7 @@ export const doSynthesis = (S, tables, logPush, saveState) => {
 
   const outRar = nextRarityKey(rar);
   const outStage = Math.max(...items.map(x=>x.stage||1));
-  const out = makeItem(tables, outStage, type, outRar, false);
+  const out = makeItem(tables, outStage, S, type, outRar, false);
 
   for (const it of items) {
     if (S.equipment[it.type] === it.id) S.equipment[it.type] = null;

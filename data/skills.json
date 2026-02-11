@@ -1,0 +1,53 @@
+{
+  "skills": [
+    {
+      "key": "power",
+      "name": "파워 스트라이크",
+      "type": "dmg",
+      "cd": 6,
+      "autoDefault": true,
+      "power": 2.0,
+      "fx": "slash"
+    },
+    {
+      "key": "execute",
+      "name": "처형",
+      "type": "dmg_missing",
+      "cd": 10,
+      "autoDefault": true,
+      "power": 2.8,
+      "fx": "ring"
+    },
+    {
+      "key": "berserk",
+      "name": "광폭화",
+      "type": "buff_atk",
+      "cd": 18,
+      "autoDefault": true,
+      "dur": 8,
+      "atkMul": 1.6,
+      "fx": "aura_red"
+    },
+    {
+      "key": "haste",
+      "name": "가속",
+      "type": "buff_aspd",
+      "cd": 18,
+      "autoDefault": true,
+      "dur": 10,
+      "aspdMul": 1.5,
+      "fx": "speed"
+    },
+    {
+      "key": "lucky",
+      "name": "행운의 룬",
+      "type": "buff_drop_gold",
+      "cd": 22,
+      "autoDefault": true,
+      "dur": 10,
+      "dropAdd": 0.08,
+      "goldMul": 1.3,
+      "fx": "spark"
+    }
+  ]
+}

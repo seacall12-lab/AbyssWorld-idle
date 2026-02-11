@@ -1,6 +1,6 @@
 {
-  "name": "방치형/클리커 RPG",
-  "short_name": "IdleRPG",
+  "name": "AbyssWorld Idle",
+  "short_name": "AbyssIdle",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0b0f14",
@@ -16,5 +16,6 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "description": "AbyssWorld 방치형/클리커 RPG (Canvas UI)"
 }

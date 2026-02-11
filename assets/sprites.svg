@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <defs>
+    <linearGradient id="gSlime" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="gGob" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#22c55e"/>
+      <stop offset="1" stop-color="#15803d"/>
+    </linearGradient>
+    <linearGradient id="gBone" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#e5e7eb"/>
+      <stop offset="1" stop-color="#9ca3af"/>
+    </linearGradient>
+    <linearGradient id="gOrc" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#84cc16"/>
+      <stop offset="1" stop-color="#4d7c0f"/>
+    </linearGradient>
+    <linearGradient id="gMage" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="gGarg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#94a3b8"/>
+      <stop offset="1" stop-color="#475569"/>
+    </linearGradient>
+    <linearGradient id="gLich" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f59e0b"/>
+      <stop offset="1" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="gWolf" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#cbd5e1"/>
+      <stop offset="1" stop-color="#64748b"/>
+    </linearGradient>
+  </defs>
+
+  <symbol id="spr_player" viewBox="0 0 64 64">
+    <circle cx="32" cy="20" r="10" fill="#e8eef6"/>
+    <path d="M18 54c2-14 10-20 14-20s12 6 14 20" fill="#2f81f7" opacity=".85"/>
+    <path d="M44 28l10-6 2 4-10 6z" fill="#22c55e"/>
+    <path d="M50 14l4 8-4 2-4-8z" fill="#22c55e" opacity=".9"/>
+  </symbol>
+
+  <symbol id="spr_slime" viewBox="0 0 64 64">
+    <path d="M12 44c0-16 8-26 20-26s20 10 20 26c0 8-4 12-20 12S12 52 12 44z" fill="url(#gSlime)"/>
+    <circle cx="26" cy="38" r="3" fill="#0b0f14" opacity=".8"/>
+    <circle cx="38" cy="38" r="3" fill="#0b0f14" opacity=".8"/>
+    <path d="M26 46c3 2 9 2 12 0" stroke="#0b0f14" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+  </symbol>
+
+  <symbol id="spr_goblin" viewBox="0 0 64 64">
+    <path d="M18 50c0-18 6-28 14-28s14 10 14 28" fill="url(#gGob)"/>
+    <circle cx="32" cy="28" r="12" fill="url(#gGob)"/>
+    <path d="M18 28l-6-4 2-4 8 6z" fill="#16a34a"/>
+    <path d="M46 28l6-4-2-4-8 6z" fill="#16a34a"/>
+    <circle cx="27" cy="28" r="2.5" fill="#0b0f14" opacity=".85"/>
+    <circle cx="37" cy="28" r="2.5" fill="#0b0f14" opacity=".85"/>
+    <path d="M28 34c3 2 5 2 8 0" stroke="#0b0f14" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+    <path d="M44 44l10 4-2 5-10-4z" fill="#94a3b8"/>
+  </symbol>
+
+  <symbol id="spr_wolf" viewBox="0 0 64 64">
+    <path d="M14 44c2-12 10-18 18-18s16 6 18 18c-6 8-12 12-18 12S20 52 14 44z" fill="url(#gWolf)"/>
+    <path d="M22 26l-4-8 10 4z" fill="#94a3b8"/>
+    <path d="M42 26l4-8-10 4z" fill="#94a3b8"/>
+    <circle cx="27" cy="38" r="2.5" fill="#0b0f14" opacity=".85"/>
+    <circle cx="37" cy="38" r="2.5" fill="#0b0f14" opacity=".85"/>
+    <path d="M30 44l2 2 2-2" stroke="#0b0f14" stroke-width="3" stroke-linecap="round" opacity=".65"/>
+  </symbol>
+
+  <symbol id="spr_skeleton" viewBox="0 0 64 64">
+    <circle cx="32" cy="24" r="12" fill="url(#gBone)"/>
+    <rect x="22" y="34" width="20" height="20" rx="8" fill="url(#gBone)"/>
+    <circle cx="27" cy="24" r="3" fill="#0b0f14" opacity=".8"/>
+    <circle cx="37" cy="24" r="3" fill="#0b0f14" opacity=".8"/>
+    <path d="M26 30h12" stroke="#0b0f14" stroke-width="3" opacity=".55"/>
+    <path d="M16 42h10M38 42h10" stroke="#e5e7eb" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+  </symbol>
+
+  <symbol id="spr_orc" viewBox="0 0 64 64">
+    <circle cx="32" cy="26" r="14" fill="url(#gOrc)"/>
+    <path d="M18 54c2-12 8-18 14-18s12 6 14 18" fill="url(#gOrc)" opacity=".9"/>
+    <circle cx="27" cy="26" r="2.5" fill="#0b0f14" opacity=".85"/>
+    <circle cx="37" cy="26" r="2.5" fill="#0b0f14" opacity=".85"/>
+    <path d="M26 34c3 3 9 3 12 0" stroke="#0b0f14" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+    <path d="M22 36l-4 6" stroke="#e8eef6" stroke-width="3" stroke-linecap="round"/>
+    <path d="M42 36l4 6" stroke="#e8eef6" stroke-width="3" stroke-linecap="round"/>
+  </symbol>
+
+  <symbol id="spr_mage" viewBox="0 0 64 64">
+    <path d="M16 48c4-16 10-24 16-24s12 8 16 24" fill="url(#gMage)"/>
+    <path d="M12 26l20-12 20 12-20 6z" fill="#6d28d9"/>
+    <circle cx="28" cy="30" r="2.5" fill="#e8eef6"/>
+    <circle cx="36" cy="30" r="2.5" fill="#e8eef6"/>
+    <path d="M46 44l6 10" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="50" cy="56" r="4" fill="#22c55e"/>
+  </symbol>
+
+  <symbol id="spr_gargoyle" viewBox="0 0 64 64">
+    <path d="M14 42c4-18 12-26 18-26s14 8 18 26c-6 10-12 14-18 14S20 52 14 42z" fill="url(#gGarg)"/>
+    <path d="M18 22l-6-8 12 4z" fill="#64748b"/>
+    <path d="M46 22l6-8-12 4z" fill="#64748b"/>
+    <circle cx="27" cy="36" r="2.3" fill="#0b0f14" opacity=".9"/>
+    <circle cx="37" cy="36" r="2.3" fill="#0b0f14" opacity=".9"/>
+    <path d="M26 44c3 2 9 2 12 0" stroke="#0b0f14" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+  </symbol>
+
+  <symbol id="spr_lich" viewBox="0 0 64 64">
+    <path d="M18 54c2-18 10-28 14-28s12 10 14 28" fill="url(#gLich)"/>
+    <circle cx="32" cy="24" r="12" fill="#0b0f14" opacity=".65"/>
+    <circle cx="28" cy="24" r="2.5" fill="#22c55e"/>
+    <circle cx="36" cy="24" r="2.5" fill="#22c55e"/>
+    <path d="M24 14l8-6 8 6" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+    <path d="M44 46l10-2 1 5-10 2z" fill="#94a3b8"/>
+  </symbol>
+
+  <symbol id="spr_chest" viewBox="0 0 64 64">
+    <rect x="12" y="26" width="40" height="26" rx="6" fill="#b45309"/>
+    <path d="M12 32h40" stroke="#0b0f14" stroke-width="4" opacity=".35"/>
+    <rect x="12" y="18" width="40" height="16" rx="8" fill="#f59e0b"/>
+    <rect x="30" y="28" width="4" height="12" rx="2" fill="#0b0f14" opacity=".5"/>
+    <circle cx="32" cy="40" r="3" fill="#22c55e"/>
+  </symbol>
+
+  <symbol id="ico_coin" viewBox="0 0 64 64">
+    <circle cx="32" cy="32" r="18" fill="#fbbf24"/>
+    <circle cx="32" cy="32" r="12" fill="#f59e0b"/>
+    <path d="M32 22v20" stroke="#0b0f14" stroke-width="4" stroke-linecap="round" opacity=".5"/>
+  </symbol>
+  <symbol id="ico_sword" viewBox="0 0 64 64">
+    <path d="M40 12l12 12-24 24-8 2 2-8z" fill="#94a3b8"/>
+    <path d="M18 46l-6 6 6 6 6-6z" fill="#22c55e"/>
+  </symbol>
+  <symbol id="ico_armor" viewBox="0 0 64 64">
+    <path d="M22 14l10-4 10 4 6 10-6 30H22L16 24z" fill="#3b82f6"/>
+    <path d="M32 10v44" stroke="#0b0f14" stroke-width="3" opacity=".25"/>
+  </symbol>
+  <symbol id="ico_ring" viewBox="0 0 64 64">
+    <circle cx="32" cy="34" r="14" fill="none" stroke="#fbbf24" stroke-width="8"/>
+    <circle cx="32" cy="18" r="6" fill="#22c55e"/>
+  </symbol>
+</svg>

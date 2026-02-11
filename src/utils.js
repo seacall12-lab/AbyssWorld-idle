@@ -27,3 +27,30 @@ export const uid = (prefix="id") => prefix + "_" + Math.random().toString(16).sl
 export const safeJsonParse = (txt) => {
   try { return JSON.parse(txt); } catch { return null; }
 };
+
+
+// Deterministic RNG (xorshift32) for reproducible drops/enhance
+export const nextSeed = (seed) => {
+  let x = seed | 0;
+  x ^= x << 13; x |= 0;
+  x ^= x >>> 17;
+  x ^= x << 5; x |= 0;
+  return x | 0;
+};
+
+export const rand01 = (S) => {
+  S.seed = nextSeed(S.seed || 123456789);
+  // unsigned to [0,1)
+  return ((S.seed >>> 0) / 4294967296);
+};
+
+
+export const pickWeightedByRand = (arr, r01, wKey="weight") => {
+  const total = arr.reduce((s,x)=>s+(x[wKey]||0), 0);
+  let r = r01 * total;
+  for (const x of arr){
+    r -= (x[wKey]||0);
+    if (r <= 0) return x;
+  }
+  return arr[arr.length-1];
+};

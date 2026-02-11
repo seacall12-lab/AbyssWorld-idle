@@ -1,4 +1,4 @@
-const CACHE_NAME = "idle-rpg-pwa-v1";
+const CACHE_NAME = "abyssworld-idle-v4";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -7,13 +7,18 @@ const PRECACHE = [
   "./service-worker.js",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
+  "./assets/sprites.svg",
+  "./assets/sd_atlas.png",
+  "./assets/sd_atlas.json",
   "./data/weapons.json",
   "./data/armors.json",
   "./data/rings.json",
   "./data/pets.json",
   "./data/pet_skills.json",
+  "./data/classes.json",
+  "./data/skills.json",
+  "./data/monsters.json",
   "./src/app.js",
-  "./src/ui.js",
   "./src/state.js",
   "./src/utils.js",
   "./src/balance.js",
@@ -21,7 +26,9 @@ const PRECACHE = [
   "./src/pets.js",
   "./src/skills.js",
   "./src/combat.js",
-  "./src/sw-register.js"
+  "./src/sw-register.js",
+  "./src/canvasui.js",
+  "./src/canvasfx.js"
 ];
 
 self.addEventListener("install", (event) => {

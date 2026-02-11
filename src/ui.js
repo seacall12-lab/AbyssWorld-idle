@@ -5,10 +5,22 @@ import { SKILLS } from "./skills.js";
 
 const $ = (id) => document.getElementById(id);
 
+const enemyToSprite = (name) => {
+  if (name.includes("슬라임")) return "#spr_slime";
+  if (name.includes("고블린")) return "#spr_goblin";
+  if (name.includes("늑대")) return "#spr_wolf";
+  if (name.includes("스켈레톤")) return "#spr_skeleton";
+  if (name.includes("오크")) return "#spr_orc";
+  if (name.includes("다크메이지")) return "#spr_mage";
+  if (name.includes("가고일")) return "#spr_gargoyle";
+  if (name.includes("리치")) return "#spr_lich";
+  return "#spr_slime";
+};
+
 export const uiRefs = () => ({
   gold: $("gold"), level: $("level"), stage: $("stage"),
   atk: $("atk"), dps: $("dps"), goldBonus: $("goldBonus"),
-  enemyName: $("enemyName"), bossTag: $("bossTag"),
+  enemyName: $("enemyName"), bossTag: $("bossTag"), enemySpriteUse: $("enemySpriteUse"),
   hpText: $("hpText"), hpBar: $("hpBar"),
   expText: $("expText"), expBar: $("expBar"),
   kills: $("kills"), drops: $("drops"),
@@ -48,6 +60,7 @@ export const render = ({S, d, refs, tables, handlers}) => {
   refs.goldBonus.textContent = `${Math.round(d.goldBonus*100)}%`;
 
   refs.enemyName.textContent = S.enemy.name;
+  if (refs.enemySpriteUse) refs.enemySpriteUse.setAttribute("href", enemyToSprite(S.enemy.name));
   refs.bossTag.style.display = S.enemy.boss ? "inline-block" : "none";
 
   refs.hpText.textContent = `${fmt(S.enemy.hp)} / ${fmt(S.enemy.hpMax)}`;

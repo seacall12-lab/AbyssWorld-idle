@@ -4,162 +4,20 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b0f14" />
-  <title>방치형/클리커 RPG (PWA)</title>
+  <title>AbyssWorld Idle (Canvas)</title>
 
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" href="./icons/icon-192.png" />
   <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="wrap">
-    <h1>방치형/클리커 RPG <span class="tiny">— PWA · 멀티파일 · 오프라인 캐시</span></h1>
+  <canvas id="game" aria-label="AbyssWorld Idle game canvas"></canvas>
 
-    <div class="grid">
-      <div class="card">
-        <div class="kpi">
-          <div class="pill"><div class="t">골드</div><div class="v mono" id="gold">0</div></div>
-          <div class="pill"><div class="t">레벨</div><div class="v mono" id="level">1</div></div>
-          <div class="pill"><div class="t">스테이지</div><div class="v mono" id="stage">1</div></div>
-
-          <div class="pill"><div class="t">공격력(총)</div><div class="v mono" id="atk">0</div></div>
-          <div class="pill"><div class="t">DPS(기대값)</div><div class="v mono" id="dps">0</div></div>
-          <div class="pill"><div class="t">골드 보너스</div><div class="v mono" id="goldBonus">0%</div></div>
-        </div>
-
-        <div class="sep"></div>
-
-        <div class="row" style="justify-content: space-between;">
-          <div>
-            <div style="font-weight:850;">
-              적: <span id="enemyName">-</span>
-              <span id="bossTag" class="tag boss" style="display:none; margin-left:6px;">BOSS</span>
-            </div>
-            <div class="tiny">HP: <span class="mono" id="hpText">0 / 0</span></div>
-          </div>
-          <div class="right">
-            <div class="tiny">처치: <span class="mono" id="kills">0</span></div>
-            <div class="tiny">드랍: <span class="mono" id="drops">0</span></div>
-          </div>
-        </div>
-
-        <div class="bar" style="margin-top:8px;"><div id="hpBar"></div></div>
-
-        <div class="sep"></div>
-
-        <div class="row">
-          <button class="btn-primary" id="btnHit">강타(클릭)</button>
-          <button class="btn-good" id="btnAuto">자동 전투: ON</button>
-
-          <label class="row tiny" style="gap:8px;">
-            <input type="checkbox" id="chkAutoAdvance" checked />
-            자동 스테이지 진행
-          </label>
-
-          <button id="btnStageUp">스테이지 +1</button>
-          <button id="btnStageDown">스테이지 -1</button>
-        </div>
-
-        <div class="sep"></div>
-
-        <div style="font-weight:850;">경험치</div>
-        <div class="tiny">EXP: <span class="mono" id="expText">0 / 0</span></div>
-        <div class="bar" style="margin-top:8px;"><div id="expBar" style="background:var(--green);"></div></div>
-
-        <div class="sep"></div>
-
-        <div class="row" style="justify-content: space-between;">
-          <div>
-            <div style="font-weight:850;">장비</div>
-            <div class="tiny">무기: <span id="eqWeapon">없음</span></div>
-            <div class="tiny">갑옷: <span id="eqArmor">없음</span></div>
-            <div class="tiny">반지: <span id="eqRing">없음</span></div>
-          </div>
-          <div class="right tiny">
-            <div>공격속도: <span class="mono" id="aspd">1.00</span> /초</div>
-            <div>치명타: <span class="mono" id="crit">5%</span> (x<span class="mono" id="critMul">1.5</span>)</div>
-            <div>드랍 확률: <span class="mono" id="dropChance">10%</span></div>
-            <div>펫 DPS: <span class="mono" id="petDps">0</span></div>
-          </div>
-        </div>
-
-        <div class="sep"></div>
-
-        <div class="row" style="justify-content: space-between;">
-          <div style="font-weight:850;">스킬</div>
-          <label class="row tiny" style="gap:8px;">
-            <input type="checkbox" id="chkAutoSkills" checked />
-            스킬 자동 사용
-          </label>
-        </div>
-        <div class="tiny">딜/버프/유틸 5개. 자동은 조건/쿨다운 기반으로 사용.</div>
-        <div class="sep"></div>
-        <div class="skillgrid" id="skills"></div>
-
-        <div class="sep"></div>
-
-        <div style="font-weight:850;">전투 로그</div>
-        <div class="log" id="log"></div>
-      </div>
-
-      <div class="card">
-        <div style="font-weight:850;">업그레이드</div>
-        <div class="tiny">골드로 기본 스탯 업그레이드(비용 점증)</div>
-        <div class="sep"></div>
-        <div class="list" id="upgrades"></div>
-
-        <div class="sep"></div>
-
-        <div class="row" style="justify-content: space-between;">
-          <div style="font-weight:850;">펫 (3슬롯)</div>
-          <div class="tiny">슬롯 해금 + 펫 선택 + 레벨업 + 펫 스킬</div>
-        </div>
-        <div class="sep"></div>
-        <div class="list" id="pets"></div>
-
-        <div class="sep"></div>
-
-        <div class="row" style="justify-content: space-between;">
-          <div style="font-weight:850;">인벤토리</div>
-          <div class="row">
-            <button id="btnSynthMode" class="btn-primary">합성 모드: OFF</button>
-            <button id="btnSynth" class="btn-good" disabled>3개 합성</button>
-          </div>
-        </div>
-        <div class="tiny">
-          합성: <b>같은 타입+같은 등급</b> 3개 → 상위 등급 1개. 강화는 확률 성공/실패(증발 없음).
-        </div>
-        <div class="sep"></div>
-        <div class="tiny">선택: <span class="mono" id="synthStatus">0/3</span></div>
-        <div class="sep"></div>
-        <div class="list" id="inventory"></div>
-
-        <div class="sep"></div>
-
-        <div class="row" style="justify-content: space-between;">
-          <div class="tiny">자동 저장: 5초 / 주요 행동 시</div>
-          <div class="row">
-            <button class="btn-warn" id="btnReset">초기화</button>
-            <button id="btnExport">내보내기</button>
-            <button id="btnImport">가져오기</button>
-          </div>
-        </div>
-        <div id="ioArea" style="display:none; margin-top:8px;">
-          <textarea id="ioText"></textarea>
-          <div class="row" style="margin-top:8px; justify-content:flex-end;">
-            <button id="btnApplyImport" class="btn-good">적용</button>
-            <button id="btnCloseIO">닫기</button>
-          </div>
-        </div>
-
-        <div class="sep"></div>
-        <div class="tiny">설치: 모바일 크롬 메뉴 → <b>홈 화면에 추가</b> (PWA)</div>
-      </div>
-    </div>
-  </div>
-
+  <script type="module">
+    import { registerSW } from "./src/sw-register.js";
+    registerSW();
+  </script>
   <script type="module" src="./src/app.js"></script>
-  <script type="module" src="./src/sw-register.js"></script>
 </body>
 </html>

@@ -9,7 +9,7 @@ export const SKILLS = [
     desc:"즉발 강타(ATK×4).",
     condition: (S) => S.enemy.hp > 0,
     cast: ({S, d, dealDamage, logPush}) => {
-      dealDamage(S, d.atk * 4.0, true);
+      dealDamage(S, d.atk * 4.0, { source:"skill", skillKey:"power", big:true });
       logPush(S, "스킬: 파워 스트라이크");
     }
   },
@@ -23,7 +23,7 @@ export const SKILLS = [
     cast: ({S, d, dealDamage, logPush}) => {
       const ratio = Math.max(0, Math.min(0.9, 1 - (S.enemy.hp / S.enemy.hpMax)));
       const mult = 3.0 + ratio * 7.0;
-      dealDamage(S, d.atk * mult, true);
+      dealDamage(S, d.atk * mult, { source:"skill", skillKey:"execute", big:true });
       logPush(S, "스킬: 처형");
     }
   },
@@ -67,24 +67,26 @@ export const SKILLS = [
 
 export const canCast = (S, key) => (S.skills[key]?.cd || 0) <= 0;
 
-export const castSkill = ({S, key, d, dealDamage, logPush, saveState}) => {
+export const castSkill = ({S, key, d, dealDamage, logPush, saveState, fx}) => {
   const sk = SKILLS.find(x=>x.key===key);
   if (!sk) return;
   if (!canCast(S, key)) return;
 
-  sk.cast({S, d, dealDamage, logPush});
+  if (fx && fx.onSkillCast) fx.onSkillCast({ key: sk.key, kind: sk.kind });
+  sk.cast({S, d, dealDamage, logPush, fx});
   S.skills[key].cd = sk.cdMax;
   saveState(S);
 };
 
-export const autoCastSkills = ({S, d, dealDamage, logPush, saveState}) => {
+export const autoCastSkills = ({S, d, dealDamage, logPush, saveState, fx}) => {
   if (!S.autoSkills) return;
 
   for (const sk of SKILLS) {
     const st = S.skills[sk.key];
     if (!st || st.cd > 0 || !st.auto) continue;
     if (sk.condition(S, d)) {
-      sk.cast({S, d, dealDamage, logPush});
+      if (fx && fx.onSkillCast) fx.onSkillCast({ key: sk.key, kind: sk.kind });
+      sk.cast({S, d, dealDamage, logPush, fx});
       st.cd = sk.cdMax;
       saveState(S);
       break;

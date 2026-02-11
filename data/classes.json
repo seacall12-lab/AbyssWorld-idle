@@ -1,0 +1,24 @@
+{
+  "milestones": [
+    {
+      "times": 3,
+      "bonusEssence": 1,
+      "title": "초심자 환생자"
+    },
+    {
+      "times": 5,
+      "bonusEssence": 2,
+      "title": "어둠의 순례자"
+    },
+    {
+      "times": 10,
+      "bonusEssence": 5,
+      "title": "심연의 추적자"
+    },
+    {
+      "times": 20,
+      "bonusEssence": 8,
+      "title": "심연의 계승자"
+    }
+  ]
+}

@@ -45,7 +45,7 @@ export const computePetDpsBonus = (S) => {
   return Math.max(0, Math.min(0.60, bonus));
 };
 
-export const tickPetSkills = ({S, dt, petsById, petSkillsById, d, dealDamage, logPush, saveState}) => {
+export const tickPetSkills = ({S, dt, petsById, petSkillsById, d, dealDamage, logPush, saveState, fx}) => {
   for (let i=0;i<3;i++){
     const slot = S.pets.slots[i];
     if (!slot || !slot.unlocked) continue;
@@ -62,9 +62,11 @@ export const tickPetSkills = ({S, dt, petsById, petSkillsById, d, dealDamage, lo
 
     if (sk.kind === "burst_damage") {
       const mult = sk.value || 2.0;
-      dealDamage(S, d.atk * mult, true);
+      if (fx && fx.onSkillCast) fx.onSkillCast({ key: "pet_burst", kind: "dmg" });
+      dealDamage(S, d.atk * mult, { source:"pet", skillKey: pet.skillId || "pet_burst", big:true });
       logPush(S, `펫 스킬: ${pet.name} - ${sk.name}`);
     } else {
+      if (fx && fx.onSkillCast) fx.onSkillCast({ key: "pet_buff", kind: "buff" });
       S.buffs._petBuff = { kind: sk.kind, value: sk.value || 0, duration: sk.duration || 8 };
       S.buffs.expires.pet = nowMs() + (sk.duration || 8) * 1000;
       logPush(S, `펫 스킬: ${pet.name} - ${sk.name}`);

@@ -1,0 +1,76 @@
+{
+  "monsters": [
+    {
+      "id": "slime",
+      "name": "어둠의 슬라임",
+      "sprite": "slime",
+      "hp": 18,
+      "atk": 2,
+      "gold": 6,
+      "exp": 6
+    },
+    {
+      "id": "goblin",
+      "name": "그림자 고블린",
+      "sprite": "goblin",
+      "hp": 26,
+      "atk": 3,
+      "gold": 8,
+      "exp": 8
+    },
+    {
+      "id": "wolf",
+      "name": "밤사냥 늑대",
+      "sprite": "wolf",
+      "hp": 34,
+      "atk": 4,
+      "gold": 10,
+      "exp": 10
+    },
+    {
+      "id": "skeleton",
+      "name": "해골 전사",
+      "sprite": "skeleton",
+      "hp": 44,
+      "atk": 5,
+      "gold": 12,
+      "exp": 12
+    },
+    {
+      "id": "orc",
+      "name": "오크 파괴자",
+      "sprite": "orc",
+      "hp": 58,
+      "atk": 7,
+      "gold": 15,
+      "exp": 15
+    },
+    {
+      "id": "mage",
+      "name": "타락 마도사",
+      "sprite": "mage",
+      "hp": 74,
+      "atk": 9,
+      "gold": 18,
+      "exp": 18
+    },
+    {
+      "id": "gargoyle",
+      "name": "가고일 수호자",
+      "sprite": "gargoyle",
+      "hp": 92,
+      "atk": 11,
+      "gold": 22,
+      "exp": 22
+    },
+    {
+      "id": "lich",
+      "name": "리치 군주",
+      "sprite": "lich",
+      "hp": 120,
+      "atk": 14,
+      "gold": 28,
+      "exp": 28
+    }
+  ]
+}

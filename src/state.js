@@ -1,10 +1,11 @@
 import { nowMs, clamp } from "./utils.js";
 import { computeEnemyForStage } from "./balance.js";
 
-export const STORAGE_KEY = "idle_rpg_pwa_v1";
+export const STORAGE_KEY = "abyssworld_idle_v4";
 
 export const baseState = () => ({
   t: nowMs(),
+  seed: Math.floor(Math.random()*2147483647) || 123456789,
   gold: 0,
   kills: 0,
   drops: 0,
@@ -12,6 +13,8 @@ export const baseState = () => ({
   auto: true,
   autoAdvance: true,
   autoSkills: true,
+
+  prestige: { times: 0, essence: 0, totalEssence: 0 },
 
   player: {
     level: 1,
@@ -60,10 +63,16 @@ export const baseState = () => ({
   log: []
 });
 
-export const logPush = (S, msg) => {
-  const line = `${new Date().toLocaleTimeString()} · ${msg}`;
-  S.log.unshift(line);
-  if (S.log.length > 10) S.log.pop();
+export const logPush = (S, msg, meta={}) => {
+  // meta: {cat:"sys|drop|enh|synth|combat", rar:"C|U|R|E"}
+  const item = {
+    t: nowMs(),
+    cat: meta.cat || "sys",
+    rar: meta.rar || null,
+    msg: String(msg)
+  };
+  S.log.unshift(item);
+  if (S.log.length > 60) S.log.length = 60;
 };
 
 const assign = (dst, src) => Object.assign(dst, src || {});
@@ -106,7 +115,7 @@ export const loadState = (computeDerivedForOffline) => {
         merged.gold += goldGain;
         merged.kills += kills;
         logPush(merged, `오프라인 보상: ${kills} 처치, +${Math.floor(goldGain)}G`);
-        merged._offlineExpGain = expGain;
+        merged._offlineSummary = { kills, gold: Math.floor(goldGain), exp: expGain, startedAt: raw.t, endedAt: nowMs() };
       }
     }
     return merged;
