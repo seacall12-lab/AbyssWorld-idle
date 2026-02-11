@@ -43,16 +43,17 @@ export const createFx = () => {
   };
 
   const themeForEnemy = (name) => {
-    if (!name) return { body:"#3b82f6", accent:"#93c5fd" };
-    if (name.includes("슬라임")) return { body:"#3b82f6", accent:"#93c5fd" };
-    if (name.includes("고블린")) return { body:"#22c55e", accent:"#86efac" };
-    if (name.includes("늑대")) return { body:"#94a3b8", accent:"#e2e8f0" };
-    if (name.includes("스켈레톤")) return { body:"#e5e7eb", accent:"#9ca3af" };
-    if (name.includes("오크")) return { body:"#84cc16", accent:"#bef264" };
-    if (name.includes("다크메이지")) return { body:"#a78bfa", accent:"#ddd6fe" };
-    if (name.includes("가고일")) return { body:"#94a3b8", accent:"#cbd5e1" };
-    if (name.includes("리치")) return { body:"#f59e0b", accent:"#fde68a" };
-    return { body:"#3b82f6", accent:"#93c5fd" };
+    // Dark fantasy themed colors for different enemy types
+    if (!name) return { body:"rgba(99, 102, 241, 0.9)", accent:"rgba(129, 140, 248, 0.9)" };
+    if (name.includes("슬라임")) return { body:"rgba(34, 197, 94, 0.9)", accent:"rgba(86, 180, 137, 0.9)" };
+    if (name.includes("고블린")) return { body:"rgba(107, 114, 128, 0.9)", accent:"rgba(156, 163, 175, 0.9)" };
+    if (name.includes("늑대")) return { body:"rgba(99, 102, 241, 0.9)", accent:"rgba(129, 140, 248, 0.9)" };
+    if (name.includes("스켈레톤")) return { body:"rgba(148, 163, 184, 0.9)", accent:"rgba(203, 213, 225, 0.9)" };
+    if (name.includes("오크")) return { body:"rgba(234, 88, 12, 0.9)", accent:"rgba(251, 146, 60, 0.9)" };
+    if (name.includes("다크메이지")) return { body:"rgba(168, 85, 247, 0.9)", accent:"rgba(214, 88, 250, 0.9)" };
+    if (name.includes("가고일")) return { body:"rgba(107, 114, 128, 0.9)", accent:"rgba(148, 163, 184, 0.9)" };
+    if (name.includes("리치")) return { body:"rgba(251, 191, 36, 0.95)", accent:"rgba(253, 224, 71, 0.95)" };
+    return { body:"rgba(99, 102, 241, 0.9)", accent:"rgba(129, 140, 248, 0.9)" };
   };
 
   const onHit = (meta, pos) => {
@@ -86,18 +87,24 @@ export const createFx = () => {
       state.flash = Math.min(1, state.flash + 0.35);
       state.shakePow = Math.min(12, state.shakePow + 4);
       state.shakeT = 0.11;
-      P.push(makeRing(x,y,"rgba(251,191,36,.85)"));
-      P.push(makeSlash(x,y,"rgba(251,191,36,.95)", 16));
-      for (let i=0;i<14;i++) P.push(makeSpark(x,y,"#fbbf24", 360));
+      // Dark fantasy damage effect colors
+      const skillColor = key==="power" ? "rgba(168, 85, 247, 0.9)" // Purple
+                        : key==="execute" ? "rgba(220, 38, 38, 0.95)" // Crimson
+                        : "rgba(251, 191, 36, 0.9)"; // Gold
+      P.push(makeRing(x, y, skillColor));
+      P.push(makeSlash(x, y, skillColor, 16));
+      for (let i=0;i<14;i++) P.push(makeSpark(x, y, skillColor, 360));
     } else {
-      // buffs / utility
-      const col = key==="lucky" ? "rgba(251,191,36,.85)"
-                : key==="haste" ? "rgba(34,197,94,.85)"
-                : key==="berserk" ? "rgba(239,68,68,.85)"
-                : "rgba(59,130,246,.85)";
-      P.push(makeRing(px,py,col));
-      for (let i=0;i<10;i++) P.push(makeSpark(px,py,col, 260));
-      P.push(makeText(px,py-20, key.toUpperCase(), col, true));
+      // buffs / utility skills with fantasy colors
+      const skillColors = {
+        "lucky": "rgba(251, 191, 36, 0.9)", // Gold
+        "haste": "rgba(34, 197, 94, 0.9)", // Green
+        "berserk": "rgba(239, 68, 68, 0.9)" // Red
+      };
+      const col = skillColors[key] || "rgba(99, 102, 241, 0.9)"; // Default: Indigo
+      P.push(makeRing(px, py, col));
+      for (let i=0;i<10;i++) P.push(makeSpark(px, py, col, 260));
+      P.push(makeText(px, py-20, key.toUpperCase(), col, true));
     }
   };
 

@@ -25,11 +25,12 @@ const fmt = (n) => {
 };
 const pct = (p) => `${Math.round((p||0)*100)}%`;
 
+// Dark Fantasy Rarity Colors
 const rarityColor = (rar) => {
-  if (rar==="E") return "rgba(167,139,250,.95)";
-  if (rar==="R") return "rgba(59,130,246,.95)";
-  if (rar==="U") return "rgba(34,197,94,.95)";
-  return "rgba(148,163,184,.9)";
+  if (rar==="E") return "rgba(168, 85, 247, .95)"; // Epic Amethyst
+  if (rar==="R") return "rgba(99, 102, 241, .95)"; // Rare Indigo
+  if (rar==="U") return "rgba(34, 197, 94, .95)"; // Uncommon Green
+  return "rgba(148, 163, 184, .9)"; // Common Gray
 };
 
 const loadJson = async (url) => {
@@ -63,9 +64,12 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
   const canvas = document.getElementById("game");
   if (!canvas) throw new Error("canvas not found");
 
-  // create UI+FX
-  const { ui, panel, text, button, pill, bar } = createUi(canvas);
+  // create UI+FX with enhanced animation support
+  const { ui, panel, text, button, pill, bar, animateButtons } = createUi(canvas);
   const fx = createFx();
+  
+  // Ready callback for hiding loading screen
+  let gameReady = false;
 
   // table loading
   const tables = {
@@ -110,21 +114,34 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
 
   const toast = (msg, sec=1.2) => { U.toast.msg = msg; U.toast.t = sec; };
 
-  // canvas sizing (draw in CSS pixels; devicePixelRatio handled by transform)
+  // Enhanced resize handling for mobile responsiveness
   const resize = () => {
     const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
     const rect = canvas.getBoundingClientRect();
     canvas.width = Math.floor(rect.width * dpr);
     canvas.height = Math.floor(rect.height * dpr);
-    ui.ctx.setTransform(dpr,0,0,dpr,0,0);
+    ui.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ui.setSize(rect.width, rect.height, dpr);
+    
+    // Store viewport info for responsive layouts
+    ui.viewportSmall = rect.width < 480;
+    ui.viewportMedium = rect.width < 768;
   };
   resize();
   window.addEventListener("resize", resize);
-  window.addEventListener("orientationchange", resize);
+  window.addEventListener("orientationchange", () => {
+    setTimeout(resize, 100); // Delay for orientation change animation
+  });
 
-  // prevent iOS rubber band / double-tap zoom quirks
-  canvas.addEventListener("touchstart", (e)=>e.preventDefault(), { passive:false });
+  // Mark game as ready and hide loading screen
+  if (window.hideLoading) {
+    window.hideLoading();
+  }
+  gameReady = true;
+  
+  // Mobile optimization: Prevent iOS rubber band / double-tap zoom quirks
+  canvas.addEventListener("touchstart", (e) => e.preventDefault(), { passive: false });
+  window.addEventListener("touchmove", (e) => e.preventDefault(), { passive: false });
 
   const dealDamageFx = (S, dmg, meta) => {
     const before = S.enemy.hp;
@@ -140,12 +157,15 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
     castSkill({S, key, d, dealDamage: dealDamageFx, logPush, saveState, fx:{
       onSkillCast: (meta)=>fx.onSkillCast(meta, layout.enemyCenter, layout.playerCenter)
     }});
+    toast(`${key.toUpperCase()} 시전!`, 0.8);
   };
 
-  // input
+  // Enhanced pointer tracking with touch support
   const pointerXY = (e) => {
     const rect = canvas.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    const clientX = e.clientX !== undefined ? e.clientX : (e.touches?.[0]?.clientX || 0);
+    const clientY = e.clientY !== undefined ? e.clientY : (e.touches?.[0]?.clientY || 0);
+    return { x: clientX - rect.left, y: clientY - rect.top };
   };
 
   const handlePointerDown = (e) => {
@@ -210,14 +230,19 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
   const drawTopBar = (d) => {
     const w = ui.w, h = ui.h;
     const p = layout.pad;
-    panel(p, p, w-2*p, layout.topH, 18, "rgba(15,23,42,.82)", "rgba(148,163,184,.22)");
-    text("AbyssWorld Idle", p+16, p+24, 16, "#e8eef6", "left", "middle", 900);
+    // Enhanced top bar with gradient effect
+    panel(p, p, w-2*p, layout.topH, 18, "rgba(15, 23, 42, 0.85)", "rgba(99, 102, 241, 0.25)");
+    
+    // Dark fantasy title with gradient effect
+    text("⚔ Abyss World ⚔", p+16, p+18, 16, "rgba(168, 85, 247, 0.98)", "left", "middle", 900);
 
-    // gold + stage
-    text(`G ${fmt(S.gold)}`, w-p-16, p+22, 16, "rgba(251,191,36,.95)", "right", "middle", 900);
-    text(`STAGE ${S.stage}`, w-p-16, p+44, 12, "rgba(148,163,184,.95)", "right", "middle", 800);
+    // Level & EXP
+    const level = S.player.level || 1;
+    text(`LV.${level}`, p+16, p+42, 13, "rgba(34, 197, 94, 0.95)", "left", "middle", 800);
 
-    // small status
+    // gold + stage on right
+    text(`◆ ${fmt(S.gold)}G`, w-p-16, p+18, 15, "rgba(251, 191, 36, 0.98)", "right", "middle", 900);
+    text(`STAGE ${S.stage}`, w-p-16, p+42, 12, "rgba(226, 232, 240, 0.9)", "right", "middle", 800);
     text(`Lv.${S.player.level} · DPS ${fmt(d.dpsTotal)}`, p+16, p+46, 12, "rgba(148,163,184,.95)", "left", "middle", 750);
   };
 
@@ -225,24 +250,36 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
     const w = ui.w, h = ui.h;
     const p = layout.pad;
     const y = h - layout.bottomH - p;
-    panel(p, y, w-2*p, layout.bottomH, 18, "rgba(15,23,42,.84)", "rgba(148,163,184,.22)");
+    panel(p, y, w-2*p, layout.bottomH, 18, "rgba(15, 23, 42, 0.88)", "rgba(99, 102, 241, 0.22)");
 
     const tabs = [
-      { key:"battle", label:"전투" },
-      { key:"items", label:"장비" },
-      { key:"pets", label:"펫" },
-      { key:"skills", label:"스킬" },
-      { key:"settings", label:"설정" },
+      { key:"battle", label:"전투", icon:"⚔" },
+      { key:"items", label:"장비", icon:"🛡" },
+      { key:"pets", label:"펫", icon:"🐺" },
+      { key:"skills", label:"스킬", icon:"✨" },
+      { key:"settings", label:"설정", icon:"⚙" },
     ];
     const bw = (w-2*p - 16) / tabs.length;
     for (let i=0;i<tabs.length;i++){
       const t = tabs[i];
       const x = p+8 + i*bw;
       const active = U.tab === t.key;
+      
+      // Per-tab colors
+      const tabColors = {
+        "battle": { fill: "rgba(220, 38, 38, 0.3)", stroke: "rgba(239, 68, 68, 0.5)" },
+        "items": { fill: "rgba(99, 102, 241, 0.3)", stroke: "rgba(99, 102, 241, 0.5)" },
+        "pets": { fill: "rgba(34, 197, 94, 0.3)", stroke: "rgba(34, 197, 94, 0.5)" },
+        "skills": { fill: "rgba(168, 85, 247, 0.3)", stroke: "rgba(168, 85, 247, 0.5)" },
+        "settings": { fill: "rgba(107, 114, 128, 0.25)", stroke: "rgba(107, 114, 128, 0.4)" }
+      };
+      
+      const colors = tabColors[t.key] || { fill: "rgba(59, 130, 246, 0.3)", stroke: "rgba(59, 130, 246, 0.5)" };
+      
       button(t.label, x, y+10, bw-8, layout.bottomH-20, {
-        fill: active ? "rgba(59,130,246,.35)" : "rgba(17,24,39,.45)",
-        stroke: active ? "rgba(59,130,246,.55)" : "rgba(148,163,184,.22)",
-        size: 14,
+        fill: active ? colors.fill : "rgba(31, 41, 55, 0.4)",
+        stroke: active ? colors.stroke : "rgba(107, 114, 128, 0.3)",
+        size: 13,
         onTap: ()=>{ U.tab = t.key; }
       });
     }
@@ -285,28 +322,70 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
     const pSize = 92;
     const eSize = S.enemy.boss ? 120 : 104;
 
+    // Enhanced player visual
     if (!drawAtlas("player", pc.x, pc.y, pSize)) {
       ui.ctx.save();
-      ui.ctx.translate(pc.x, pc.y);
-      ui.ctx.fillStyle = "rgba(59,130,246,.9)";
-      ui.ctx.beginPath(); ui.ctx.roundRect(-26, -18, 52, 54, 18); ui.ctx.fill();
+      ui.ctx.globalAlpha = 0.85;
+      // Player body
+      ui.ctx.fillStyle = "rgba(168, 85, 247, 0.75)";
+      ui.ctx.beginPath();
+      ui.ctx.roundRect(pc.x - 26, pc.y - 18, 52, 54, 18);
+      ui.ctx.fill();
+      // Player highlight
+      ui.ctx.strokeStyle = "rgba(214, 88, 250, 0.6)";
+      ui.ctx.lineWidth = 2;
+      ui.ctx.stroke();
       ui.ctx.restore();
     }
 
     const ek = S.enemy.sprite || (S.enemy.boss ? "lich" : "slime");
     if (!drawAtlas(ek, ec.x, ec.y, eSize)) {
       ui.ctx.save();
-      ui.ctx.translate(ec.x, ec.y);
-      ui.ctx.fillStyle = S.enemy.boss ? "rgba(251,191,36,.85)" : "rgba(148,163,184,.85)";
-      ui.ctx.beginPath(); ui.ctx.arc(0, 0, 32, 0, Math.PI*2); ui.ctx.fill();
+      ui.ctx.globalAlpha = 0.85;
+      
+      // Enemy glow aura
+      const pulse = Math.sin(Date.now() / 200) * 0.15 + 0.85;
+      ui.ctx.fillStyle = S.enemy.boss ? "rgba(251, 191, 36, 0.2)" : "rgba(99, 102, 241, 0.15)";
+      ui.ctx.beginPath();
+      ui.ctx.arc(ec.x, ec.y, 45 * pulse, 0, Math.PI*2);
+      ui.ctx.fill();
+      
+      // Main body
+      ui.ctx.fillStyle = S.enemy.boss ? "rgba(251, 191, 36, 0.85)" : "rgba(99, 102, 241, 0.75)";
+      ui.ctx.beginPath();
+      ui.ctx.arc(ec.x, ec.y, 32, 0, Math.PI*2);
+      ui.ctx.fill();
+      
+      // Enemy eyes
+      ui.ctx.fillStyle = "#1f2937";
+      ui.ctx.beginPath();
+      ui.ctx.arc(ec.x - 10, ec.y - 8, 5, 0, Math.PI*2);
+      ui.ctx.fill();
+      ui.ctx.beginPath();
+      ui.ctx.arc(ec.x + 10, ec.y - 8, 5, 0, Math.PI*2);
+      ui.ctx.fill();
+      
+      // Boss crown
+      if (S.enemy.boss) {
+        ui.ctx.fillStyle = "rgba(251, 191, 36, 0.95)";
+        for (let i = 0; i < 3; i++) {
+          const angle = (i / 3) * Math.PI - Math.PI/2;
+          const x = ec.x + Math.cos(angle) * 22;
+          const y = ec.y + Math.sin(angle) * 18;
+          ui.ctx.beginPath();
+          ui.ctx.arc(x, y, 6, 0, Math.PI*2);
+          ui.ctx.fill();
+        }
+      }
+      
       ui.ctx.restore();
     }
 
     // Add hotspots for clicking enemy area = HIT
     ui.addHot(br.x, br.y, br.w, br.h, ()=>clickAttack(d));
 
-    // tips
-    text("탭: HIT · 하단 탭에서 장비/펫/스킬", br.x+18, br.y+br.h-18, 12, "rgba(148,163,184,.85)", "left", "middle", 700);
+    // Tips with emoji
+    text("👆 탭해서 적을 공격하세요!", br.x+18, br.y+br.h-18, 12, "rgba(168, 85, 247, 0.85)", "left", "middle", 700);
   };
 
   const clickAttack = (d) => {
@@ -322,16 +401,24 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
     const y = br.y + br.h + 12;
     const w = ui.w;
 
-    // action row
+    // action row - make HIT button larger for mobile
     const x0 = p;
     const bw = (w - 2*p - 12) / 2;
-    button("HIT", x0, y, bw, 56, {
-      fill:"rgba(59,130,246,.55)", stroke:"rgba(59,130,246,.75)", size:18,
+    const hitButtonH = ui.viewportSmall ? 66 : 56; // Larger on small screens
+    
+    // HIT Button with Dark Fantasy colors
+    button("HIT", x0, y, bw, hitButtonH, {
+      fill: "rgba(220, 38, 38, 0.4)",
+      stroke: "rgba(239, 68, 68, 0.6)",
+      size: 18,
       onTap: ()=>clickAttack(d)
     });
-    button(S.auto ? "AUTO ON" : "AUTO OFF", x0 + bw + 12, y, bw, 56, {
-      fill: S.auto ? "rgba(34,197,94,.35)" : "rgba(239,68,68,.25)",
-      stroke: S.auto ? "rgba(34,197,94,.55)" : "rgba(239,68,68,.45)",
+    
+    // AUTO Button
+    button(S.auto ? "AUTO ON" : "AUTO OFF", x0 + bw + 12, y, bw, hitButtonH, {
+      fill: S.auto ? "rgba(34, 197, 94, 0.35)" : "rgba(107, 114, 128, 0.25)",
+      stroke: S.auto ? "rgba(34, 197, 94, 0.55)" : "rgba(148, 163, 184, 0.45)",
+      size: 14,
       onTap: ()=>{ S.auto = !S.auto; saveState(S); toast(S.auto?"AUTO 켜짐":"AUTO 꺼짐"); }
     });
 
@@ -339,6 +426,8 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
     const y2 = y + 66;
     const bw3 = (w - 2*p - 16) / 3;
     button("STAGE -", x0, y2, bw3, 46, {
+      fill: "rgba(99, 102, 241, 0.3)",
+      stroke: "rgba(99, 102, 241, 0.5)",
       onTap: ()=>{
         S.stage = Math.max(1, S.stage - 1);
         respawnEnemy(S);
@@ -346,6 +435,8 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
       }
     });
     button("STAGE +", x0 + bw3 + 8, y2, bw3, 46, {
+      fill: "rgba(99, 102, 241, 0.3)",
+      stroke: "rgba(99, 102, 241, 0.5)",
       onTap: ()=>{
         S.stage += 1;
         respawnEnemy(S);
@@ -353,7 +444,8 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
       }
     });
     button(S.autoAdvance ? "자동진행 ON" : "자동진행 OFF", x0 + (bw3+8)*2, y2, bw3, 46, {
-      fill: S.autoAdvance ? "rgba(34,197,94,.28)" : "rgba(17,24,39,.45)",
+      fill: S.autoAdvance ? "rgba(34, 197, 94, 0.28)" : "rgba(55, 65, 81, 0.4)",
+      stroke: S.autoAdvance ? "rgba(34, 197, 94, 0.5)" : "rgba(107, 114, 128, 0.35)",
       onTap: ()=>{
         S.autoAdvance = !S.autoAdvance;
         saveState(S);
@@ -375,17 +467,25 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
     // auto skill toggle
     const y4 = y3 + 66;
     button(S.autoSkills ? "스킬 자동사용 ON" : "스킬 자동사용 OFF", p, y4, w-2*p, 44, {
-      fill: S.autoSkills ? "rgba(34,197,94,.28)" : "rgba(17,24,39,.45)",
-      onTap: ()=>{ S.autoSkills = !S.autoSkills; saveState(S); }
+      fill: S.autoSkills ? "rgba(34, 197, 94, 0.28)" : "rgba(55, 65, 81, 0.4)",
+      stroke: S.autoSkills ? "rgba(34, 197, 94, 0.5)" : "rgba(107, 114, 128, 0.35)",
+      onTap: ()=>{ S.autoSkills = !S.autoSkills; saveState(S); toast(S.autoSkills ? "스킬 자동 ON" : "스킬 자동 OFF"); }
     });
 
-    // log lines
+    // log lines with dark fantasy styling
     const y5 = y4 + 54;
-    panel(p, y5, w-2*p, 120, 18, "rgba(15,23,42,.55)", "rgba(148,163,184,.18)");
-    text("로그", p+14, y5+18, 12, "rgba(148,163,184,.95)", "left", "middle", 900);
+    panel(p, y5, w-2*p, 120, 18, "rgba(15, 23, 42, 0.7)", "rgba(139, 92, 246, 0.2)");
+    text("로그", p+14, y5+18, 12, "rgba(168, 85, 247, 0.95)", "left", "middle", 900);
     const lines = (S.log||[]).slice(0,4);
     for (let i=0;i<lines.length;i++){
-      text(lines[i], p+14, y5+40+i*18, 12, "rgba(232,238,246,.88)", "left", "middle", 650);
+      const line = lines[i];
+      // Color code log messages
+      let logColor = "rgba(226, 232, 240, 0.88)";
+      if (line.includes("골드")) logColor = "rgba(251, 191, 36, 0.9)";
+      else if (line.includes("경험치")) logColor = "rgba(34, 197, 94, 0.9)";
+      else if (line.includes("환생")) logColor = "rgba(168, 85, 247, 0.9)";
+      else if (line.includes("레어") || line.includes("에픽")) logColor = "rgba(99, 102, 241, 0.9)";
+      text(line, p+14, y5+40+i*18, 11, logColor, "left", "middle", 650);
     }
   };
 
@@ -399,30 +499,43 @@ const clampScroll = (i, min, max) => Math.max(min, Math.min(max, i));
                 : key==="haste" ? "가속"
                 : "행운";
 
-    // main button
-    button(label, x,y,w,h, {
-      fill: ready ? "rgba(17,24,39,.55)" : "rgba(17,24,39,.35)",
-      stroke: ready ? "rgba(148,163,184,.28)" : "rgba(148,163,184,.18)",
+    // Per-skill fantasy colors
+    const skillColors = {
+      "power": { fill: "rgba(168, 85, 247, 0.4)", stroke: "rgba(168, 85, 247, 0.6)" }, // Amethyst
+      "execute": { fill: "rgba(220, 38, 38, 0.35)", stroke: "rgba(239, 68, 68, 0.5)" }, // Crimson
+      "berserk": { fill: "rgba(234, 88, 12, 0.4)", stroke: "rgba(249, 115, 22, 0.6)" }, // Flame Orange
+      "haste": { fill: "rgba(34, 197, 94, 0.35)", stroke: "rgba(34, 197, 94, 0.6)" }, // Forest Green
+      "lucky": { fill: "rgba(251, 191, 36, 0.35)", stroke: "rgba(251, 191, 36, 0.6)" } // Gold
+    };
+    
+    const colors = skillColors[key] || { fill: "rgba(59, 130, 246, 0.4)", stroke: "rgba(59, 130, 246, 0.6)" };
+
+    // main button with skill-specific colors
+    button(label, x, y, w, h, {
+      fill: ready ? colors.fill : "rgba(31, 41, 55, 0.35)",
+      stroke: ready ? colors.stroke : "rgba(107, 114, 128, 0.3)",
+      size: 12,
       onTap: ()=>{ if (ready) castSkillFx(key, d); else toast(`쿨다운 ${cd.toFixed(1)}s`); }
     });
 
     // cooldown overlay
-    if (!ready){
+    if (!ready) {
       ui.ctx.save();
       ui.ctx.globalAlpha = 0.55;
-      ui.ctx.fillStyle = "rgba(11,15,20,1)";
+      ui.ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
       ui.ctx.beginPath();
       ui.ctx.roundRect(x, y, w, h, 14);
       ui.ctx.fill();
       ui.ctx.globalAlpha = 1;
-      text(cd.toFixed(1), x+w/2, y+h/2, 14, "rgba(232,238,246,.9)", "center", "middle", 900);
+      text(cd.toFixed(1), x+w/2, y+h/2, 12, "rgba(248, 113, 113, 0.9)", "center", "middle", 900);
       ui.ctx.restore();
     }
 
-    // auto toggle corner
-    const ax = x+6, ay = y+6, aw = 22, ah = 22;
-    panel(ax, ay, aw, ah, 8, st?.auto ? "rgba(34,197,94,.9)" : "rgba(148,163,184,.28)", null);
-    text("A", ax+aw/2, ay+ah/2+0.5, 12, st?.auto ? "#0b0f14" : "rgba(232,238,246,.85)", "center", "middle", 900);
+    // auto toggle corner with improved visibility
+    const ax = x+4, ay = y+4, aw = 20, ah = 20;
+    panel(ax, ay, aw, ah, 6, st?.auto ? "rgba(34, 197, 94, 0.85)" : "rgba(107, 114, 128, 0.25)", 
+          st?.auto ? "rgba(34, 197, 94, 0.6)" : null);
+    text("A", ax+aw/2, ay+ah/2+0.5, 11, st?.auto ? "#0f1419" : "rgba(203, 213, 225, 0.9)", "center", "middle", 900);
     ui.addHot(ax, ay, aw, ah, ()=>{
       st.auto = !st.auto;
       saveState(S);

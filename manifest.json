@@ -1,21 +1,67 @@
 {
-  "name": "AbyssWorld Idle",
-  "short_name": "AbyssIdle",
+  "name": "Abyss World - 다크 판타지 Idle RPG",
+  "short_name": "AbyssWorld",
+  "description": "깊은 어둠의 세계에서 강적들을 무찌르고 점점 강해지는 다크 판타지 Idle RPG. 실시간 전투, 장비 강화, 펫 육성, 스킬 시스템을 갖춘 완벽한 방치형 게임입니다.",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0b0f14",
-  "theme_color": "#0b0f14",
-  "icons": [
+  "orientation": "portrait-primary",
+  "background_color": "#0a0d12",
+  "theme_color": "#a855f7",
+  "prefer_related_applications": false,
+  "screenshots": [
     {
       "src": "./icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "narrow"
     },
     {
       "src": "./icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "wide"
     }
   ],
-  "description": "AbyssWorld 방치형/클리커 RPG (Canvas UI)"
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["games"],
+  "shortcuts": [
+    {
+      "name": "전투 시작",
+      "short_name": "전투",
+      "description": "즉시 전투를 시작합니다",
+      "url": "./index.html?tab=battle",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
 }

@@ -2,20 +2,62 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0f14" />
-  <title>AbyssWorld Idle (Canvas)</title>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,viewport-fit=cover" />
+  <meta name="description" content="Abyss World - 다크 판타지 Idle RPG. 깊은 어둠의 세계에서 몬스터를 무찌르고 강해지세요." />
+  <meta name="theme-color" content="#0a0d12" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AbyssWorld Idle" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="msapplication-TileColor" content="#0a0d12" />
+  
+  <!-- Preload Critical Assets -->
+  <link rel="preload" as="style" href="./styles.css" />
+  <link rel="preconnect" href="./data/" />
+  
+  <title>Abyss World Idle - 다크 판타지 RPG</title>
+  
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" href="./icons/icon-192.png" />
   <link rel="apple-touch-icon" href="./icons/icon-192.png" />
   <link rel="stylesheet" href="./styles.css" />
+  <style>
+    /* Inline critical CSS for above-fold content */
+    body { background: linear-gradient(135deg, #0a0d12 0%, #1a0033 50%, #0f1419 100%); }
+    .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: inherit; z-index: 9999; }
+    .loading-spinner { width: 50px; height: 50px; border: 3px solid rgba(139, 92, 246, 0.2); border-top: 3px solid #a855f7; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { position: absolute; bottom: 30px; color: #94a3b8; font-size: 12px; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+  </style>
 </head>
 <body>
-  <canvas id="game" aria-label="AbyssWorld Idle game canvas"></canvas>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div>
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Abyss World 로딩 중...</div>
+    </div>
+  </div>
+
+  <!-- Game Canvas -->
+  <canvas id="game" aria-label="Abyss World Idle game canvas"></canvas>
 
   <script type="module">
     import { registerSW } from "./src/sw-register.js";
+    
+    // Hide loading screen when game is ready
+    window.hideLoading = function() {
+      const overlay = document.getElementById('loadingOverlay');
+      if (overlay) {
+        overlay.style.animation = 'fadeOut 0.5s ease-out forwards';
+        setTimeout(() => overlay.remove(), 500);
+      }
+    };
+    
+    // Hide loading in 3 seconds at most (fallback)
+    setTimeout(window.hideLoading, 3000);
+    
     registerSW();
   </script>
   <script type="module" src="./src/app.js"></script>
