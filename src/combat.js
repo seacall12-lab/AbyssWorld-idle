@@ -63,7 +63,7 @@ export const computeDerived = (S, tables) => {
   const rGold = r0 ? statWithEnh(r0.gold, r0.enh||0, "gold") : 0;
 
   let atk = (S.player.baseAtk + (upAtk*2) + wAtk + aAtk) * (S.buffs.atkMul || 1);
-  let aspd = (S.player.aspd + (upAspd*0.08)) * (S.buffs.aspdMul || 1);
+  const aspd = (S.player.aspd + (upAspd*0.08)) * (S.buffs.aspdMul || 1);
 
   const crit = clamp(S.player.crit + (upCrit*0.01), 0, 0.75);
   const critMul = S.player.critMul;
@@ -73,34 +73,23 @@ export const computeDerived = (S, tables) => {
 
   let dropChance = clamp(dropChanceBase(S.stage) + (S.buffs.dropAdd||0), 0.05, 0.60);
 
+
+  
+  // prestige (essence) bonuses (stable, small)
+  const ess = Math.max(0, (S.prestige && S.prestige.essence) ? S.prestige.essence : 0);
+  const atkMulEss = 1 + 0.02 * ess;
+  const goldAddEss = 0.015 * ess;
+  const dropAddEss = 0.002 * ess; // +0.2%p each essence
+
+  atk *= atkMulEss;
+  goldBonus = clamp(goldBonus + goldAddEss, 0, 5);
+  dropChance = Math.min(0.60, dropChance + dropAddEss);
+
   const dpsPlayer = atk * aspd * (1 + crit*(critMul-1));
   const petBonus = computePetDpsBonus(S);
   const dpsPets = dpsPlayer * petBonus;
 
-  // prestige (essence) bonuses (stable, small)
-  const ess = Math.max(0, (S.prestige && S.prestige.essence) ? S.prestige.essence : 0);
-  const atkMulEss = 1 + 0.02 * ess;
-  const goldAddEss = 0.015 * ess;
-  const dropAddEss = 0.002 * ess; // +0.2%p each essence
-
-  atk *= atkMulEss;
-  goldBonus += goldAddEss;
-  dropChance = Math.min(0.60, dropChance + dropAddEss);
-  dpsPlayer = atk * aspd * (1 + crit*(critMul-1));
-  // prestige (essence) bonuses (stable, small)
-  const ess = Math.max(0, (S.prestige && S.prestige.essence) ? S.prestige.essence : 0);
-  const atkMulEss = 1 + 0.02 * ess;
-  const goldAddEss = 0.015 * ess;
-  const dropAddEss = 0.002 * ess; // +0.2%p each essence
-
-  atk *= atkMulEss;
-  goldBonus += goldAddEss;
-  dropChance = Math.min(0.60, dropChance + dropAddEss);
-
-  // recompute dps with modified atk/drop
-  const dpsPlayer2 = atk * aspd * (1 + crit*(critMul-1));
-
-  return { atk, aspd, crit, critMul, goldBonus, dropChance, dpsPlayer: dpsPlayer2, dpsPets, dpsTotal: dpsPlayer2 + dpsPets };
+  return { atk, aspd, crit, critMul, goldBonus, dropChance, dpsPlayer, dpsPets, dpsTotal: dpsPlayer + dpsPets };
 };
 
 
@@ -149,7 +138,7 @@ export const onKill = (S, tables, d, logPush, saveState) => {
 };
 
 export const clickAttack = (S, d, logPush, saveState, tables) => {
-  const critRoll = Math.random() < d.crit;
+  const critRoll = rand01(S) < d.crit;
   const dmg = d.atk * 1.6 * (critRoll ? d.critMul : 1);
   dealDamage(S, dmg);
   if (S.enemy.hp <= 0) onKill(S, tables, d, logPush, saveState);

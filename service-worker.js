@@ -1,4 +1,4 @@
-const CACHE_NAME = "abyssworld-idle-v5";
+const CACHE_NAME = "abyssworld-idle-v6";
 const PRECACHE = [
   "./",
   "./index.html",
